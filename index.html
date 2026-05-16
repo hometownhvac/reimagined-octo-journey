@@ -401,7 +401,7 @@ footer { background: var(--dark); color: #8A90A8; padding: 2.5rem; display: grid
     <div id="customer-review-list"></div>
   </div>
 
-  <!-- Leave a Review Form -->
+  <!-- Leave a Review Form — submits to evan@hometownhvacwv.com via Formspree -->
   <div class="leave-review" style="margin-top: 2.5rem;">
     <h3 class="serif">Had a great experience? Tell us about it.</h3>
     <p class="sub">We'd love to hear from you. Your review helps your neighbors find reliable HVAC service.</p>
@@ -479,45 +479,58 @@ footer { background: var(--dark); color: #8A90A8; padding: 2.5rem; display: grid
     </div>
   </div>
 
+
   <div class="contact-form">
     <h3 class="serif">Request a Free Quote</h3>
     <p class="sub">No obligation. We'll get back to you within 2 hours.</p>
-    <div class="form-row">
-      <div class="form-group">
-        <label for="fname">First Name</label>
-        <input type="text" id="fname" placeholder="Jane">
+    <form
+      id="quote-form"
+      action="https://formspree.io/f/xqejzpad"
+      method="POST"
+      onsubmit="handleSubmit(event)"
+    >
+      <!-- Redirect to thank-you page after submission -->
+      <input type="hidden" name="_next" value="thank-you.html">
+      <!-- Email recipient (Formspree uses the account email; this is for your reference) -->
+      <input type="hidden" name="_subject" value="New Quote Request — Hometown HVAC">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="first_name" placeholder="Jane">
+        </div>
+        <div class="form-group">
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="last_name" placeholder="Smith">
+        </div>
       </div>
       <div class="form-group">
-        <label for="lname">Last Name</label>
-        <input type="text" id="lname" placeholder="Smith">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="(304) 555-0000">
       </div>
-    </div>
-    <div class="form-group">
-      <label for="phone">Phone Number</label>
-      <input type="tel" id="phone" placeholder="(304) 555-0000">
-    </div>
-    <div class="form-group">
-      <label for="email">Email Address</label>
-      <input type="email" id="email" placeholder="jane@example.com">
-    </div>
-    <div class="form-group">
-      <label for="service">Service Needed</label>
-      <select id="service">
-        <option value="">Select a service...</option>
-        <option>AC Installation &amp; Repair</option>
-        <option>Heating &amp; Furnace</option>
-        <option>Emergency Service</option>
-        <option>Maintenance Plan</option>
-        <option>Air Quality &amp; Duct Cleaning</option>
-        <option>Commercial HVAC</option>
-        <option>Not sure — need an assessment</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="message">Tell us a bit more (optional)</label>
-      <textarea id="message" placeholder="Describe the issue or what you're looking for..."></textarea>
-    </div>
-    <button class="form-submit" onclick="handleSubmit()">Send My Request →</button>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com">
+      </div>
+      <div class="form-group">
+        <label for="service">Service Needed</label>
+        <select id="service" name="service">
+          <option value="">Select a service...</option>
+          <option>AC Installation &amp; Repair</option>
+          <option>Heating &amp; Furnace</option>
+          <option>Emergency Service</option>
+          <option>Maintenance Plan</option>
+          <option>Air Quality &amp; Duct Cleaning</option>
+          <option>Commercial HVAC</option>
+          <option>Not sure — need an assessment</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="message">Tell us a bit more (optional)</label>
+        <textarea id="message" name="message" placeholder="Describe the issue or what you're looking for..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send My Request →</button>
+    </form>
   </div>
 </section>
 
@@ -565,16 +578,16 @@ footer { background: var(--dark); color: #8A90A8; padding: 2.5rem; display: grid
 
 <script>
   // ── Quote form ──────────────────────────────────────────────────────────────
-  function handleSubmit() {
+  // Validates required fields before letting Formspree handle the actual submission.
+  function handleSubmit(e) {
     const fname   = document.getElementById('fname').value.trim();
     const phone   = document.getElementById('phone').value.trim();
     const service = document.getElementById('service').value;
     if (!fname || !phone || !service) {
+      e.preventDefault();
       alert('Please fill in your name, phone number, and the service you need.');
-      return;
     }
-    alert('Thank you, ' + fname + '! We received your request and will call you back within 2 hours. For emergencies, call (304) 801-3339 directly.');
-    ['fname','lname','phone','email','service','message'].forEach(id => document.getElementById(id).value = '');
+    // If valid, the form submits normally to Formspree → redirects to thank-you.html
   }
 
   // ── Star picker ─────────────────────────────────────────────────────────────
